@@ -7,7 +7,6 @@ import { Slider } from "@/components/ui/slider";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
-
 const PreTestForm = () => {
   const {
     toast
@@ -186,10 +185,8 @@ const PreTestForm = () => {
           <img src="https://fomrs-acad-lider.lovable.app/lovable-uploads/cd5b5d51-f39e-4ded-9d8a-686459ccc11b.png" alt="Academia de Líderes Logo" className="mx-auto h-20 md:h-24 mb-4" />
         </div>
         <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">Academia de Líderes Módulo l</h1>
-        <h2 className="text-xl md:text-2xl font-semibold text-yellow-400 mb-3">Pré Teste</h2>
-        <p className="text-gray-300 text-sm md:text-base max-w-2xl mx-auto">
-          Preencha seus dados abaixo e responda o questionário
-        </p>
+        <h2 className="text-xl md:text-2xl font-semibold text-yellow-400 mb-3">Cadastro Alunos</h2>
+        <p className="text-gray-300 text-sm md:text-base max-w-2xl mx-auto">Preencha seus dados abaixo e inicie sua jornada na Academia de Líderes</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8">
@@ -286,5 +283,4 @@ const PreTestForm = () => {
       </form>
     </div>;
 };
-
 export default PreTestForm;
