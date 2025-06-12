@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+
 const PreTestForm = () => {
   const {
     toast
@@ -259,7 +260,7 @@ const PreTestForm = () => {
               </div>
 
               <div className="flex flex-col items-center space-y-3 p-4 bg-slate-600/30 rounded-lg">
-                <img src="https://img.freepik.com/vetores-premium/emoticon-de-emoji-feliz-mostrando-dois-polegares-para-cima-sinal-como-um-gesto-de-mao_1303870-1082.jpg?semt=ais_hybrid&w=740" alt="Alegre" className="w-16 h-16 rounded-full object-cover" />
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3ki1JJpE1TsjrZyDhXkLQLg57gSveTHhDqQ&s" alt="Alegre" className="w-16 h-16 rounded-full object-cover" />
                 <RadioGroupItem value="alegre" id="alegre" className="border-white text-white" />
                 <Label htmlFor="alegre" className="text-gray-300 cursor-pointer">Alegre</Label>
               </div>
@@ -279,4 +280,5 @@ const PreTestForm = () => {
       </form>
     </div>;
 };
+
 export default PreTestForm;
