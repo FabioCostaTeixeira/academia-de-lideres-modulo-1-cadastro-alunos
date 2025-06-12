@@ -41,43 +41,43 @@ const PreTestForm = () => {
   });
   const questions = [{
     id: "pergunta01",
-    title: "5. 01) No seu entendimento, como é classificado a cultura brasileira de confronto de negociação segundo o estudo HAVARD BUSINESS REVEW?",
+    title: "01) No seu entendimento, como é classificado a cultura brasileira de confronto de negociação segundo o estudo HAVARD BUSINESS REVEW?",
     options: ["Evita confronto e não expressa emoção.", "Gosta de confrontar e não expressa emoção.", "Expressa emoção e evita confronto.", "Gosta de confrontar mas expressa emoção."]
   }, {
     id: "pergunta02",
-    title: "7. 02) Identifique três paradigmas (modelos mentais) de irresponsabilidade, influenciado pela cultura dos líderes na ocorrência de um acidente de trabalho nas empresas brasileiras.",
+    title: "02) Identifique três paradigmas (modelos mentais) de irresponsabilidade, influenciado pela cultura dos líderes na ocorrência de um acidente de trabalho nas empresas brasileiras.",
     options: ["A culpa é do acidentado - Nunca pedi para ele fazer isso - Os acidentes acontecem é muito risco.", "Isso foi uma aberração - Não temos leis fortes de Segurança - Ele era um bom empregado.", "A família vai sofrer - A segurança é custo - Vamos cuidar dele.", "Vai implicar ação judicial - A empresa exige um padrão seguro - Aonde eu errei."]
   }, {
     id: "pergunta03",
-    title: "9. 03) Assinale a simples característica de LIDERANÇA, para prevenção da vida?",
+    title: "03) Assinale a simples característica de LIDERANÇA, para prevenção da vida?",
     options: ["É gestão que é priorização.", "Clarear as expectativas.", "Confrontar a realidade e assumindo a responsabilidade.", "Todas estão certas."]
   }, {
     id: "pergunta04",
-    title: "11. 04) O que fez a Fórmula 1 reduzir drasticamente as fatalidades dos pilotos depois da Morte de Ayrton Senna?",
+    title: "04) O que fez a Fórmula 1 reduzir drasticamente as fatalidades dos pilotos depois da Morte de Ayrton Senna?",
     options: ["Aprimoramento na gestão de risco.", "Melhorias de segurança nos carros e nas roupas dos pilotos.", "Correta decisão política.", "Investimento financeiro em pesquisa e desenvolvimento."]
   }, {
     id: "pergunta05",
-    title: "13. 05) Qual o primeiro passo a ser dado para mudança, dentro dos oito passos de mudança do professor de Harvard John Kotter?",
+    title: "05) Qual o primeiro passo a ser dado para mudança, dentro dos oito passos de mudança do professor de Harvard John Kotter?",
     options: ["Estruturar a coalisão junto a liderança.", "Estabelecer Senso de Urgência.", "Desenvolver a Visão, Estratégia e Valores.", "Propiciar vitórias de curto prazo."]
   }, {
     id: "pergunta06",
-    title: "15. 06) Segundo a pesquisa da GALLUP quantos porcento de pessoas estão engajadas no trabalho, trabalham com paixão e se sentem conectados com a sua empresa, trazem melhorias e inovação?",
+    title: "06) Segundo a pesquisa da GALLUP quantos porcento de pessoas estão engajadas no trabalho, trabalham com paixão e se sentem conectados com a sua empresa, trazem melhorias e inovação?",
     options: ["28%.", "58%", "78%.", "88%"]
   }, {
     id: "pergunta07",
-    title: "17. 07) Qual a fórmula extraordinária de resultados sustentáveis?",
+    title: "07) Qual a fórmula extraordinária de resultados sustentáveis?",
     options: ["Resultado=(Processos+Pessoas).", "Resultado=(Processos+Estrategia).", "Resultado=(Processos+Gestão+Estrategia).", "Resultado=(Processos+Empresa)"]
   }, {
     id: "pergunta08",
-    title: "19. 08) Qual o pilar que serve como base de sustentação da Liderança, conforme os 12 Pilares da Liderança do Brigadeiro William Cohen?",
+    title: "08) Qual o pilar que serve como base de sustentação da Liderança, conforme os 12 Pilares da Liderança do Brigadeiro William Cohen?",
     options: ["Conheça o seu negócio.", "Confiança.", "Autenticidade.", "Integridade."]
   }, {
     id: "pergunta09",
-    title: "21. 09) Como se constrói a CONFIANÇA do líder junto a equipe?",
+    title: "09) Como se constrói a CONFIANÇA do líder junto a equipe?",
     options: ["Comunicação e Meta.", "Competência e Apoio.", "Diretrizes e Feedback.", "Conhecimento e Feedback."]
   }, {
     id: "pergunta10",
-    title: "23. 10) Defina Comportamento?",
+    title: "10) Defina Comportamento?",
     options: ["São escolhas dentro de um padrão social.", "São alinhamento de valores e atitudes.", "São ações e atitudes visíveis impulsionadas pelas crenças, hábitos e valores.", "É a motivação interna e externas que forma o caráter de um indivíduo."]
   }];
   const handleInputChange = (field: string, value: string | number[]) => {
@@ -188,7 +188,7 @@ const PreTestForm = () => {
         <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">Academia de Líderes Módulo l</h1>
         <h2 className="text-xl md:text-2xl font-semibold text-yellow-400 mb-3">Pré Teste</h2>
         <p className="text-gray-300 text-sm md:text-base max-w-2xl mx-auto">
-          Preencha seus dados para iniciar sua jornada na Academia de Líderes
+          Preencha seus dados abaixo e responda o questionário
         </p>
       </div>
 
