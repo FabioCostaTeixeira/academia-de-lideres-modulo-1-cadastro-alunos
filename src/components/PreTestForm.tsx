@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,35 +8,42 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+
 const PreTestForm = () => {
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     nomeCompleto: "",
-    idade: "",
-    uf: "",
     telefone: "",
     email: "",
     cpf: "",
+    idade: "",
     cidadeResidencia: "",
-    empresa: "",
-    cidadeTreinamento: "",
-    estadoTreinamento: "",
+    uf: "",
     escolaridade: "",
     funcao: "",
     funcaoOutros: "",
+    empresa: "",
+    cidadeTreinamento: "",
+    estadoTreinamento: "",
     estadoEmocional: ""
   });
+
   const handleInputChange = (field: string, value: string) => {
+    // Para o campo estadoTreinamento, converter para uppercase e limitar a 2 caracteres
+    if (field === 'estadoTreinamento') {
+      value = value.toUpperCase().slice(0, 2);
+    }
+    
     setFormData(prev => ({
       ...prev,
       [field]: value
     }));
   };
+
   const validateForm = () => {
-    const requiredFields = ['nomeCompleto', 'idade', 'uf', 'telefone', 'email', 'cpf', 'cidadeResidencia', 'empresa', 'cidadeTreinamento', 'estadoTreinamento', 'escolaridade', 'funcao', 'estadoEmocional'];
+    const requiredFields = ['nomeCompleto', 'telefone', 'email', 'cpf', 'idade', 'cidadeResidencia', 'uf', 'escolaridade', 'funcao', 'empresa', 'cidadeTreinamento', 'estadoTreinamento', 'estadoEmocional'];
+    
     for (const field of requiredFields) {
       if (!formData[field as keyof typeof formData] || formData[field as keyof typeof formData] === "") {
         return false;
@@ -73,8 +81,20 @@ const PreTestForm = () => {
       });
       return false;
     }
+
+    // Validate UF do treinamento (exactly 2 characters)
+    if (formData.estadoTreinamento.length !== 2) {
+      toast({
+        title: "UF Inválida",
+        description: "Digite a UF do estado com exatamente 2 caracteres (ex: ES, SP, RJ)",
+        variant: "destructive"
+      });
+      return false;
+    }
+
     return true;
   };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) {
@@ -85,6 +105,7 @@ const PreTestForm = () => {
       });
       return;
     }
+
     setIsSubmitting(true);
     try {
       console.log("Form data to submit:", formData);
@@ -99,18 +120,18 @@ const PreTestForm = () => {
       // Reset form
       setFormData({
         nomeCompleto: "",
-        idade: "",
-        uf: "",
         telefone: "",
         email: "",
         cpf: "",
+        idade: "",
         cidadeResidencia: "",
-        empresa: "",
-        cidadeTreinamento: "",
-        estadoTreinamento: "",
+        uf: "",
         escolaridade: "",
         funcao: "",
         funcaoOutros: "",
+        empresa: "",
+        cidadeTreinamento: "",
+        estadoTreinamento: "",
         estadoEmocional: ""
       });
     } catch (error) {
@@ -124,11 +145,17 @@ const PreTestForm = () => {
       setIsSubmitting(false);
     }
   };
-  return <div className="container mx-auto px-4 py-8 max-w-4xl">
+
+  return (
+    <div className="container mx-auto px-4 py-8 max-w-4xl">
       {/* Header */}
       <div className="text-center mb-8">
         <div className="mb-6">
-          <img src="https://fomrs-acad-lider.lovable.app/lovable-uploads/cd5b5d51-f39e-4ded-9d8a-686459ccc11b.png" alt="Academia de Líderes Logo" className="mx-auto h-20 md:h-24 mb-4" />
+          <img 
+            src="https://fomrs-acad-lider.lovable.app/lovable-uploads/cd5b5d51-f39e-4ded-9d8a-686459ccc11b.png" 
+            alt="Academia de Líderes Logo" 
+            className="mx-auto h-20 md:h-24 mb-4" 
+          />
         </div>
         <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">Academia de Líderes Módulo l</h1>
         <h2 className="text-xl md:text-2xl font-semibold text-yellow-400 mb-3">Cadastro Alunos</h2>
@@ -144,63 +171,102 @@ const PreTestForm = () => {
             <CardTitle className="text-white text-xl">Dados do Aluno</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
+            {/* 1. Nome Completo */}
             <div>
               <Label htmlFor="nomeCompleto" className="text-gray-300">Nome Completo *</Label>
-              <Input id="nomeCompleto" value={formData.nomeCompleto} onChange={e => handleInputChange('nomeCompleto', e.target.value)} placeholder="Digite seu nome completo" className="bg-slate-700 border-slate-600 text-white" required />
+              <Input 
+                id="nomeCompleto" 
+                value={formData.nomeCompleto} 
+                onChange={(e) => handleInputChange('nomeCompleto', e.target.value)} 
+                placeholder="Digite seu nome completo" 
+                className="bg-slate-700 border-slate-600 text-white" 
+                required 
+              />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="idade" className="text-gray-300">Idade *</Label>
-                <Input id="idade" value={formData.idade} onChange={e => handleInputChange('idade', e.target.value)} placeholder="Idade" className="bg-slate-700 border-slate-600 text-white" required />
-              </div>
-
-              <div>
-                <Label htmlFor="uf" className="text-gray-300">UF *</Label>
-                <Input id="uf" value={formData.uf} onChange={e => handleInputChange('uf', e.target.value)} placeholder="SP" className="bg-slate-700 border-slate-600 text-white" required />
-              </div>
-            </div>
-
+            {/* 2. Telefone */}
             <div>
               <Label htmlFor="telefone" className="text-gray-300">Telefone *</Label>
-              <Input id="telefone" value={formData.telefone} onChange={e => handleInputChange('telefone', e.target.value)} placeholder="(XX) XXXX-XXXX" className="bg-slate-700 border-slate-600 text-white" required />
+              <Input 
+                id="telefone" 
+                value={formData.telefone} 
+                onChange={(e) => handleInputChange('telefone', e.target.value)} 
+                placeholder="(XX) XXXX-XXXX" 
+                className="bg-slate-700 border-slate-600 text-white" 
+                required 
+              />
             </div>
 
+            {/* 3. Email */}
             <div>
               <Label htmlFor="email" className="text-gray-300">Qual seu melhor email? *</Label>
-              <Input id="email" type="email" value={formData.email} onChange={e => handleInputChange('email', e.target.value)} placeholder="seu@email.com" className="bg-slate-700 border-slate-600 text-white" required />
+              <Input 
+                id="email" 
+                type="email" 
+                value={formData.email} 
+                onChange={(e) => handleInputChange('email', e.target.value)} 
+                placeholder="seu@email.com" 
+                className="bg-slate-700 border-slate-600 text-white" 
+                required 
+              />
             </div>
 
+            {/* 4. CPF */}
             <div>
               <Label htmlFor="cpf" className="text-gray-300">CPF *</Label>
-              <Input id="cpf" value={formData.cpf} onChange={e => handleInputChange('cpf', e.target.value)} placeholder="XXX.XXX.XXX-XX" className="bg-slate-700 border-slate-600 text-white" required />
+              <Input 
+                id="cpf" 
+                value={formData.cpf} 
+                onChange={(e) => handleInputChange('cpf', e.target.value)} 
+                placeholder="XXX.XXX.XXX-XX" 
+                className="bg-slate-700 border-slate-600 text-white" 
+                required 
+              />
             </div>
 
+            {/* 5. Idade */}
+            <div>
+              <Label htmlFor="idade" className="text-gray-300">Idade *</Label>
+              <Input 
+                id="idade" 
+                value={formData.idade} 
+                onChange={(e) => handleInputChange('idade', e.target.value)} 
+                placeholder="Idade" 
+                className="bg-slate-700 border-slate-600 text-white" 
+                required 
+              />
+            </div>
+
+            {/* 6. Cidade de Residência */}
             <div>
               <Label htmlFor="cidadeResidencia" className="text-gray-300">Cidade de sua residência *</Label>
-              <Input id="cidadeResidencia" value={formData.cidadeResidencia} onChange={e => handleInputChange('cidadeResidencia', e.target.value)} placeholder="Digite sua cidade" className="bg-slate-700 border-slate-600 text-white" required />
+              <Input 
+                id="cidadeResidencia" 
+                value={formData.cidadeResidencia} 
+                onChange={(e) => handleInputChange('cidadeResidencia', e.target.value)} 
+                placeholder="Digite sua cidade" 
+                className="bg-slate-700 border-slate-600 text-white" 
+                required 
+              />
             </div>
 
+            {/* 7. Estado/UF */}
             <div>
-              <Label htmlFor="empresa" className="text-gray-300">Empresa onde trabalha *</Label>
-              <Input id="empresa" value={formData.empresa} onChange={e => handleInputChange('empresa', e.target.value)} placeholder="Digite o nome da empresa" className="bg-slate-700 border-slate-600 text-white" required />
+              <Label htmlFor="uf" className="text-gray-300">Estado/UF *</Label>
+              <Input 
+                id="uf" 
+                value={formData.uf} 
+                onChange={(e) => handleInputChange('uf', e.target.value)} 
+                placeholder="SP" 
+                className="bg-slate-700 border-slate-600 text-white" 
+                required 
+              />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="cidadeTreinamento" className="text-gray-300">Cidade onde está realizando o treinamento *</Label>
-                <Input id="cidadeTreinamento" value={formData.cidadeTreinamento} onChange={e => handleInputChange('cidadeTreinamento', e.target.value)} placeholder="Digite a cidade do treinamento" className="bg-slate-700 border-slate-600 text-white" required />
-              </div>
-
-              <div>
-                <Label htmlFor="estadoTreinamento" className="text-gray-300">Estado onde está realizando o treinamento *</Label>
-                <Input id="estadoTreinamento" value={formData.estadoTreinamento} onChange={e => handleInputChange('estadoTreinamento', e.target.value)} placeholder="Digite o estado do treinamento" className="bg-slate-700 border-slate-600 text-white" required />
-              </div>
-            </div>
-
+            {/* 8. Escolaridade */}
             <div>
               <Label htmlFor="escolaridade" className="text-gray-300">Escolaridade *</Label>
-              <Select value={formData.escolaridade} onValueChange={value => handleInputChange('escolaridade', value)}>
+              <Select value={formData.escolaridade} onValueChange={(value) => handleInputChange('escolaridade', value)}>
                 <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
                   <SelectValue placeholder="Selecione sua escolaridade" />
                 </SelectTrigger>
@@ -216,9 +282,10 @@ const PreTestForm = () => {
               </Select>
             </div>
 
+            {/* 9. Função */}
             <div>
               <Label htmlFor="funcao" className="text-gray-300">Função *</Label>
-              <Select value={formData.funcao} onValueChange={value => handleInputChange('funcao', value)}>
+              <Select value={formData.funcao} onValueChange={(value) => handleInputChange('funcao', value)}>
                 <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
                   <SelectValue placeholder="Selecione sua função" />
                 </SelectTrigger>
@@ -232,34 +299,99 @@ const PreTestForm = () => {
                 </SelectContent>
               </Select>
               
-              {formData.funcao === "Outros" && <div className="mt-3">
-                  <Input value={formData.funcaoOutros} onChange={e => handleInputChange('funcaoOutros', e.target.value)} placeholder="Especifique sua função" className="bg-slate-700 border-slate-600 text-white" required />
-                </div>}
+              {formData.funcao === "Outros" && (
+                <div className="mt-3">
+                  <Input 
+                    value={formData.funcaoOutros} 
+                    onChange={(e) => handleInputChange('funcaoOutros', e.target.value)} 
+                    placeholder="Especifique sua função" 
+                    className="bg-slate-700 border-slate-600 text-white" 
+                    required 
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* 10. Empresa */}
+            <div>
+              <Label htmlFor="empresa" className="text-gray-300">Empresa onde trabalha *</Label>
+              <Input 
+                id="empresa" 
+                value={formData.empresa} 
+                onChange={(e) => handleInputChange('empresa', e.target.value)} 
+                placeholder="Digite o nome da empresa" 
+                className="bg-slate-700 border-slate-600 text-white" 
+                required 
+              />
+            </div>
+
+            {/* 11. Cidade do Treinamento */}
+            <div>
+              <Label htmlFor="cidadeTreinamento" className="text-gray-300">Cidade onde está realizando o treinamento *</Label>
+              <Input 
+                id="cidadeTreinamento" 
+                value={formData.cidadeTreinamento} 
+                onChange={(e) => handleInputChange('cidadeTreinamento', e.target.value)} 
+                placeholder="Digite a cidade do treinamento" 
+                className="bg-slate-700 border-slate-600 text-white" 
+                required 
+              />
+            </div>
+
+            {/* 12. Estado/UF do Treinamento */}
+            <div>
+              <Label htmlFor="estadoTreinamento" className="text-gray-300">Estado/UF onde está realizando o treinamento *</Label>
+              <Input 
+                id="estadoTreinamento" 
+                value={formData.estadoTreinamento} 
+                onChange={(e) => handleInputChange('estadoTreinamento', e.target.value)} 
+                placeholder="ES (apenas 2 caracteres)" 
+                className="bg-slate-700 border-slate-600 text-white" 
+                maxLength={2}
+                required 
+              />
+              <p className="text-xs text-gray-400 mt-1">Digite apenas 2 caracteres representando a UF (ex: ES, SP, RJ)</p>
             </div>
           </CardContent>
         </Card>
 
-        {/* Estado Emocional */}
+        {/* 13. Estado Emocional */}
         <Card className="bg-slate-800/50 border-slate-700">
           <CardHeader>
             <CardTitle className="text-white text-xl">Estado Emocional *</CardTitle>
           </CardHeader>
           <CardContent>
-            <RadioGroup value={formData.estadoEmocional} onValueChange={value => handleInputChange('estadoEmocional', value)} className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <RadioGroup 
+              value={formData.estadoEmocional} 
+              onValueChange={(value) => handleInputChange('estadoEmocional', value)} 
+              className="grid grid-cols-1 md:grid-cols-3 gap-4"
+            >
               <div className="flex flex-col items-center space-y-3 p-4 bg-slate-600/30 rounded-lg">
-                <img alt="Triste" src="https://static4.depositphotos.com/1016045/328/i/950/depositphotos_3282479-stock-illustration-sad-emoticon.jpg" className="w-16 h-16 rounded-full object-cover" />
+                <img 
+                  alt="Triste" 
+                  src="https://static4.depositphotos.com/1016045/328/i/950/depositphotos_3282479-stock-illustration-sad-emoticon.jpg" 
+                  className="w-16 h-16 rounded-full object-cover" 
+                />
                 <RadioGroupItem value="triste" id="triste" className="border-white text-white" />
                 <Label htmlFor="triste" className="text-gray-300 cursor-pointer">Triste</Label>
               </div>
 
               <div className="flex flex-col items-center space-y-3 p-4 bg-slate-600/30 rounded-lg">
-                <img src="https://rlv.zcache.com.br/etiqueta_engracada_do_emoji_da_expressao_neutra-rcc2643c446fc469c8c15c0d630585e2e_0ugmp_8byvr_644.webp" alt="Normal" className="w-16 h-16 rounded-full object-cover" />
+                <img 
+                  src="https://rlv.zcache.com.br/etiqueta_engracada_do_emoji_da_expressao_neutra-rcc2643c446fc469c8c15c0d630585e2e_0ugmp_8byvr_644.webp" 
+                  alt="Normal" 
+                  className="w-16 h-16 rounded-full object-cover" 
+                />
                 <RadioGroupItem value="normal" id="normal" className="border-white text-white" />
                 <Label htmlFor="normal" className="text-gray-300 cursor-pointer">Normal</Label>
               </div>
 
               <div className="flex flex-col items-center space-y-3 p-4 bg-slate-600/30 rounded-lg">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3ki1JJpE1TsjrZyDhXkLQLg57gSveTHhDqQ&s" alt="Alegre" className="w-16 h-16 rounded-full object-contain" />
+                <img 
+                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3ki1JJpE1TsjrZyDhXkLQLg57gSveTHhDqQ&s" 
+                  alt="Alegre" 
+                  className="w-16 h-16 rounded-full object-contain" 
+                />
                 <RadioGroupItem value="alegre" id="alegre" className="border-white text-white" />
                 <Label htmlFor="alegre" className="text-gray-300 cursor-pointer">Alegre</Label>
               </div>
@@ -269,14 +401,24 @@ const PreTestForm = () => {
 
         {/* Submit Button */}
         <div className="flex justify-center pt-6">
-          <Button type="submit" disabled={isSubmitting} className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold px-8 py-3 text-lg">
-            {isSubmitting ? <>
+          <Button 
+            type="submit" 
+            disabled={isSubmitting} 
+            className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold px-8 py-3 text-lg"
+          >
+            {isSubmitting ? (
+              <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Enviando...
-              </> : 'Enviar Formulário'}
+              </>
+            ) : (
+              'Enviar Formulário'
+            )}
           </Button>
         </div>
       </form>
-    </div>;
+    </div>
+  );
 };
+
 export default PreTestForm;
