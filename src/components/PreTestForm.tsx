@@ -10,6 +10,37 @@ import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import SuccessPopup from "./SuccessPopup";
 
+// Add Brazilian states constants
+const BR_STATES = [
+  { uf: "AC", name: "Acre" },
+  { uf: "AL", name: "Alagoas" },
+  { uf: "AP", name: "Amapá" },
+  { uf: "AM", name: "Amazonas" },
+  { uf: "BA", name: "Bahia" },
+  { uf: "CE", name: "Ceará" },
+  { uf: "DF", name: "Distrito Federal" },
+  { uf: "ES", name: "Espírito Santo" },
+  { uf: "GO", name: "Goiás" },
+  { uf: "MA", name: "Maranhão" },
+  { uf: "MT", name: "Mato Grosso" },
+  { uf: "MS", name: "Mato Grosso do Sul" },
+  { uf: "MG", name: "Minas Gerais" },
+  { uf: "PA", name: "Pará" },
+  { uf: "PB", name: "Paraíba" },
+  { uf: "PR", name: "Paraná" },
+  { uf: "PE", name: "Pernambuco" },
+  { uf: "PI", name: "Piauí" },
+  { uf: "RJ", name: "Rio de Janeiro" },
+  { uf: "RN", name: "Rio Grande do Norte" },
+  { uf: "RS", name: "Rio Grande do Sul" },
+  { uf: "RO", name: "Rondônia" },
+  { uf: "RR", name: "Roraima" },
+  { uf: "SC", name: "Santa Catarina" },
+  { uf: "SP", name: "São Paulo" },
+  { uf: "SE", name: "Sergipe" },
+  { uf: "TO", name: "Tocantins" },
+];
+
 const formatCpf = (value: string) => {
   // Limita a entrada a somente números e até 11 dígitos.
   const onlyNums = value.replace(/\D/g, "").slice(0, 11);
@@ -61,12 +92,10 @@ const PreTestForm = () => {
     if (field === "telefone") {
       value = formatTelefone(value);
     }
-    if (field === "estadoTreinamento") {
-      value = value.toUpperCase().slice(0, 2);
-    }
     if (field === "idade") {
       value = value.replace(/\D/g, "").slice(0, 2);
     }
+    // Remove estadoTreinamento/uf special casing (now using dropdowns)
     setFormData(prev => ({
       ...prev,
       [field]: value
@@ -120,10 +149,20 @@ const PreTestForm = () => {
       });
       return false;
     }
-    if (formData.estadoTreinamento.length !== 2) {
+    // Validation for uf and estadoTreinamento: must be one of valid UFs
+    const validUFs = BR_STATES.map(s => s.uf);
+    if (!validUFs.includes(formData.uf)) {
       toast({
         title: "UF Inválida",
-        description: "Digite a UF do estado com exatamente 2 caracteres (ex: ES, SP, RJ)",
+        description: "Por favor, selecione um estado válido para sua residência.",
+        variant: "destructive"
+      });
+      return false;
+    }
+    if (!validUFs.includes(formData.estadoTreinamento)) {
+      toast({
+        title: "UF do Treinamento Inválida",
+        description: "Por favor, selecione um estado válido para o treinamento.",
         variant: "destructive"
       });
       return false;
@@ -359,14 +398,21 @@ const PreTestForm = () => {
             {/* 7. Estado/UF */}
             <div>
               <Label htmlFor="uf" className="text-gray-300">Estado/UF *</Label>
-              <Input 
-                id="uf" 
+              <Select 
                 value={formData.uf} 
-                onChange={(e) => handleInputChange('uf', e.target.value)} 
-                placeholder="SP" 
-                className="bg-slate-700 border-slate-600 text-white" 
-                required 
-              />
+                onValueChange={(value) => handleInputChange('uf', value)}
+              >
+                <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+                  <SelectValue placeholder="Selecione o estado da sua residência" />
+                </SelectTrigger>
+                <SelectContent className="bg-slate-700 border-slate-600 z-50">
+                  {BR_STATES.map((state) => (
+                    <SelectItem key={state.uf} value={state.uf} className="text-white">
+                      {state.name} ({state.uf})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             {/* 8. Escolaridade */}
@@ -447,16 +493,21 @@ const PreTestForm = () => {
             {/* 12. Estado/UF do Treinamento */}
             <div>
               <Label htmlFor="estadoTreinamento" className="text-gray-300">Estado/UF onde está realizando o treinamento *</Label>
-              <Input 
-                id="estadoTreinamento" 
+              <Select 
                 value={formData.estadoTreinamento} 
-                onChange={(e) => handleInputChange('estadoTreinamento', e.target.value)} 
-                placeholder="ES (apenas 2 caracteres)" 
-                className="bg-slate-700 border-slate-600 text-white" 
-                maxLength={2}
-                required 
-              />
-              <p className="text-xs text-gray-400 mt-1">Digite apenas 2 caracteres representando a UF (ex: ES, SP, RJ)</p>
+                onValueChange={(value) => handleInputChange('estadoTreinamento', value)}
+              >
+                <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+                  <SelectValue placeholder="Selecione o estado do treinamento" />
+                </SelectTrigger>
+                <SelectContent className="bg-slate-700 border-slate-600 z-50">
+                  {BR_STATES.map((state) => (
+                    <SelectItem key={state.uf} value={state.uf} className="text-white">
+                      {state.name} ({state.uf})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </CardContent>
         </Card>
