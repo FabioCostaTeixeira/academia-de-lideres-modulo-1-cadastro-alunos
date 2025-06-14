@@ -13,6 +13,7 @@ export type Database = {
         Row: {
           carimbo_data_hora: string | null
           cidade_residencia: string | null
+          cidade_treinamento: string | null
           cpf: string
           data_treinamento: string | null
           email: string | null
@@ -20,8 +21,10 @@ export type Database = {
           escolaridade: string | null
           estado_emocional: string | null
           estado_residencia: string | null
+          estado_treinamento: string | null
           funcao: string | null
           hora_treinamento: string | null
+          id_aluno: string | null
           idade: string | null
           nome_completo: string | null
           telefone: string | null
@@ -30,6 +33,7 @@ export type Database = {
         Insert: {
           carimbo_data_hora?: string | null
           cidade_residencia?: string | null
+          cidade_treinamento?: string | null
           cpf: string
           data_treinamento?: string | null
           email?: string | null
@@ -37,8 +41,10 @@ export type Database = {
           escolaridade?: string | null
           estado_emocional?: string | null
           estado_residencia?: string | null
+          estado_treinamento?: string | null
           funcao?: string | null
           hora_treinamento?: string | null
+          id_aluno?: string | null
           idade?: string | null
           nome_completo?: string | null
           telefone?: string | null
@@ -47,6 +53,7 @@ export type Database = {
         Update: {
           carimbo_data_hora?: string | null
           cidade_residencia?: string | null
+          cidade_treinamento?: string | null
           cpf?: string
           data_treinamento?: string | null
           email?: string | null
@@ -54,8 +61,10 @@ export type Database = {
           escolaridade?: string | null
           estado_emocional?: string | null
           estado_residencia?: string | null
+          estado_treinamento?: string | null
           funcao?: string | null
           hora_treinamento?: string | null
+          id_aluno?: string | null
           idade?: string | null
           nome_completo?: string | null
           telefone?: string | null
@@ -109,7 +118,40 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      armor: {
+        Args: { "": string }
+        Returns: string
+      }
+      dearmor: {
+        Args: { "": string }
+        Returns: string
+      }
+      gen_random_bytes: {
+        Args: { "": number }
+        Returns: string
+      }
+      gen_random_uuid: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      gen_salt: {
+        Args: { "": string }
+        Returns: string
+      }
+      generate_unique_alphanumeric_id: {
+        Args:
+          | Record<PropertyKey, never>
+          | { length_param: number; table_name: string; column_name: string }
+        Returns: string
+      }
+      pgp_armor_headers: {
+        Args: { "": string }
+        Returns: Record<string, unknown>[]
+      }
+      pgp_key_id: {
+        Args: { "": string }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
