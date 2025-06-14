@@ -20,9 +20,10 @@ const SuccessPopup = ({ open, onClose }: SuccessPopupProps) => {
           ×
         </button>
         <div className="mb-6">
-          <img 
-            src="https://fomrs-acad-lider.lovable.app/lovable-uploads/cd5b5d51-f39e-4ded-9d8a-686459ccc11b.png"
-            alt="Academia de Líderes Logo"
+          {/* Substitua o PNG para uma imagem confiável hospedada por você ou finalidade demo */}
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-check.svg/1024px-Circle-icons-check.svg.png"
+            alt="Cadastro realizado com sucesso"
             className="mx-auto h-20 md:h-24 mb-4"
           />
         </div>

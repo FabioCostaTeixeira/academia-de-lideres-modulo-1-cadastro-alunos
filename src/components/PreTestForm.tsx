@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -47,11 +46,13 @@ const PreTestForm = () => {
 
   const handleInputChange = (field: string, value: string) => {
     if (field === "cpf") {
-      // Aceita só números e aplica a máscara ao formatar para o input
       value = formatCpf(value);
     }
     if (field === "estadoTreinamento") {
-      value = value.toUpperCase().slice(0,2);
+      value = value.toUpperCase().slice(0, 2);
+    }
+    if (field === "idade") {
+      value = value.replace(/\D/g, "").slice(0, 2);
     }
     setFormData(prev => ({
       ...prev,
@@ -89,7 +90,6 @@ const PreTestForm = () => {
       });
       return false;
     }
-    // Valida se o CPF são 11 dígitos numéricos
     if (unmaskCpf(formData.cpf).length !== 11) {
       toast({
         title: "CPF Inválido",
@@ -115,6 +115,20 @@ const PreTestForm = () => {
       });
       return false;
     }
+    const idadeInt = parseInt(formData.idade, 10);
+    if (
+      isNaN(idadeInt) ||
+      idadeInt < 1 ||
+      idadeInt > 99 ||
+      formData.idade.trim() === ""
+    ) {
+      toast({
+        title: "Idade inválida",
+        description: "A idade deve ser um número entre 1 e 99.",
+        variant: "destructive"
+      });
+      return false;
+    }
     return true;
   };
 
@@ -130,7 +144,7 @@ const PreTestForm = () => {
     }
     setIsSubmitting(true);
     try {
-      // mapeia campos do frontend para os campos do banco Supabase
+      // Nunca inclui treinamento_id!
       const payload = {
         nome_completo: formData.nomeCompleto,
         telefone: formData.telefone,
@@ -144,8 +158,8 @@ const PreTestForm = () => {
         empresa: formData.empresa,
         cidade_treinamento: formData.cidadeTreinamento,
         estado_treinamento: formData.estadoTreinamento,
-        estado_emocional: formData.estadoEmocional
-        // treinamento_id NÃO será preenchido aqui!
+        estado_emocional: formData.estadoEmocional,
+        // treinamento_id NÃO deve ser preenchido nunca, manter como NULL
       };
 
       const { error } = await supabase
@@ -277,14 +291,30 @@ const PreTestForm = () => {
             {/* 5. Idade */}
             <div>
               <Label htmlFor="idade" className="text-gray-300">Idade *</Label>
-              <Input 
-                id="idade" 
-                value={formData.idade} 
-                onChange={(e) => handleInputChange('idade', e.target.value)} 
-                placeholder="Idade" 
-                className="bg-slate-700 border-slate-600 text-white" 
-                required 
+              <Input
+                id="idade"
+                value={formData.idade}
+                onChange={(e) => handleInputChange('idade', e.target.value)}
+                onBlur={(e) => {
+                  // Remove leading zeros and force value between 1-99 on blur
+                  let value = e.target.value.replace(/^0+/, '');
+                  if (value && (parseInt(value, 10) < 1 || parseInt(value, 10) > 99)) {
+                    toast({
+                      title: "Idade inválida",
+                      description: "A idade deve ser um número entre 1 e 99.",
+                      variant: "destructive"
+                    });
+                    value = "";
+                  }
+                  handleInputChange('idade', value);
+                }}
+                placeholder="Idade"
+                className="bg-slate-700 border-slate-600 text-white"
+                inputMode="numeric"
+                maxLength={2}
+                required
               />
+              <p className="text-xs text-gray-400 mt-1">Somente números de 1 a 99</p>
             </div>
 
             {/* 6. Cidade de Residência */}
