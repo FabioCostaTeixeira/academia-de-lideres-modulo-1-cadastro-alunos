@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,10 +9,25 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import SuccessPopup from "./SuccessPopup";
+
+const formatCpf = (value: string) => {
+  // Limita a entrada a somente números e até 11 dígitos.
+  const onlyNums = value.replace(/\D/g, "").slice(0, 11);
+  // Aplica a máscara xxx.xxx.xxx-xx
+  if (onlyNums.length <= 3) return onlyNums;
+  if (onlyNums.length <= 6) return `${onlyNums.slice(0,3)}.${onlyNums.slice(3)}`;
+  if (onlyNums.length <= 9) return `${onlyNums.slice(0,3)}.${onlyNums.slice(3,6)}.${onlyNums.slice(6)}`;
+  return `${onlyNums.slice(0,3)}.${onlyNums.slice(3,6)}.${onlyNums.slice(6,9)}-${onlyNums.slice(9)}`;
+};
+
+const unmaskCpf = (value: string) => value.replace(/\D/g, "").slice(0, 11);
 
 const PreTestForm = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [successOpen, setSuccessOpen] = useState(false); // controla exibição do popup
+
   const [formData, setFormData] = useState({
     nomeCompleto: "",
     telefone: "",
@@ -30,8 +46,12 @@ const PreTestForm = () => {
   });
 
   const handleInputChange = (field: string, value: string) => {
-    if (field === 'estadoTreinamento') {
-      value = value.toUpperCase().slice(0, 2);
+    if (field === "cpf") {
+      // Aceita só números e aplica a máscara ao formatar para o input
+      value = formatCpf(value);
+    }
+    if (field === "estadoTreinamento") {
+      value = value.toUpperCase().slice(0,2);
     }
     setFormData(prev => ({
       ...prev,
@@ -41,8 +61,8 @@ const PreTestForm = () => {
 
   const validateForm = () => {
     const requiredFields = [
-      'nomeCompleto', 'telefone', 'email', 'cpf', 'idade', 'cidadeResidencia', 'uf',
-      'escolaridade', 'funcao', 'empresa', 'cidadeTreinamento', 'estadoTreinamento', 'estadoEmocional'
+      "nomeCompleto", "telefone", "email", "cpf", "idade", "cidadeResidencia", "uf",
+      "escolaridade", "funcao", "empresa", "cidadeTreinamento", "estadoTreinamento", "estadoEmocional"
     ];
     for (const field of requiredFields) {
       if (!formData[field as keyof typeof formData] || formData[field as keyof typeof formData] === "") {
@@ -69,11 +89,20 @@ const PreTestForm = () => {
       });
       return false;
     }
-    const cpfRegex = /^\d{11}$/;
-    if (!cpfRegex.test(formData.cpf.replace(/\D/g, ''))) {
+    // Valida se o CPF são 11 dígitos numéricos
+    if (unmaskCpf(formData.cpf).length !== 11) {
       toast({
         title: "CPF Inválido",
-        description: "Digite o CPF no formato XXX.XXX.XXX-XX",
+        description: "O CPF deve conter 11 dígitos numéricos.",
+        variant: "destructive"
+      });
+      return false;
+    }
+    const cpfOnly = unmaskCpf(formData.cpf);
+    if (!/^\d{11}$/.test(cpfOnly)) {
+      toast({
+        title: "CPF Inválido",
+        description: "Digite somente números no CPF.",
         variant: "destructive"
       });
       return false;
@@ -101,12 +130,12 @@ const PreTestForm = () => {
     }
     setIsSubmitting(true);
     try {
-      // Mapeia campos do frontend para os campos do banco Supabase
+      // mapeia campos do frontend para os campos do banco Supabase
       const payload = {
         nome_completo: formData.nomeCompleto,
         telefone: formData.telefone,
         email: formData.email,
-        cpf: formData.cpf,
+        cpf: unmaskCpf(formData.cpf),
         idade: formData.idade,
         cidade_residencia: formData.cidadeResidencia,
         estado_residencia: formData.uf,
@@ -116,6 +145,7 @@ const PreTestForm = () => {
         cidade_treinamento: formData.cidadeTreinamento,
         estado_treinamento: formData.estadoTreinamento,
         estado_emocional: formData.estadoEmocional
+        // treinamento_id NÃO será preenchido aqui!
       };
 
       const { error } = await supabase
@@ -130,10 +160,7 @@ const PreTestForm = () => {
           variant: "destructive"
         });
       } else {
-        toast({
-          title: "Formulário Enviado com Sucesso!",
-          description: "Seus dados foram salvos com sucesso."
-        });
+        setSuccessOpen(true); // Abre o popup de sucesso!
         setFormData({
           nomeCompleto: "",
           telefone: "",
@@ -165,6 +192,9 @@ const PreTestForm = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
+      {/* Popup Sucesso */}
+      <SuccessPopup open={successOpen} onClose={() => setSuccessOpen(false)} />
+
       {/* Header */}
       <div className="text-center mb-8">
         <div className="mb-6">
@@ -233,12 +263,15 @@ const PreTestForm = () => {
               <Label htmlFor="cpf" className="text-gray-300">CPF *</Label>
               <Input 
                 id="cpf" 
-                value={formData.cpf} 
-                onChange={(e) => handleInputChange('cpf', e.target.value)} 
-                placeholder="XXX.XXX.XXX-XX" 
-                className="bg-slate-700 border-slate-600 text-white" 
-                required 
+                value={formData.cpf}
+                onChange={(e) => handleInputChange('cpf', e.target.value)}
+                placeholder="XXX.XXX.XXX-XX"
+                className="bg-slate-700 border-slate-600 text-white"
+                inputMode="numeric"
+                maxLength={14} // máscara com pontuação = máx 14 chars
+                required
               />
+              <p className="text-xs text-gray-400 mt-1">Digite apenas números; será aplicado o formato xxx.xxx.xxx-xx</p>
             </div>
 
             {/* 5. Idade */}
