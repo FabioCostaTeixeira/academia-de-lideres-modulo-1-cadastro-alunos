@@ -22,6 +22,16 @@ const formatCpf = (value: string) => {
 
 const unmaskCpf = (value: string) => value.replace(/\D/g, "").slice(0, 11);
 
+// Função utilitária para mascarar telefone formato (xx)xxxxx-xxxx, recebe apenas números.
+const formatTelefone = (value: string) => {
+  const onlyNums = value.replace(/\D/g, "").slice(0, 11); // até 11 dígitos
+  if (onlyNums.length <= 2) return onlyNums;
+  if (onlyNums.length <= 7)
+    return `(${onlyNums.slice(0, 2)})${onlyNums.slice(2)}`;
+  return `(${onlyNums.slice(0, 2)})${onlyNums.slice(2, 7)}-${onlyNums.slice(7)}`;
+};
+const unmaskTelefone = (value: string) => value.replace(/\D/g, "").slice(0, 11);
+
 const PreTestForm = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -47,6 +57,9 @@ const PreTestForm = () => {
   const handleInputChange = (field: string, value: string) => {
     if (field === "cpf") {
       value = formatCpf(value);
+    }
+    if (field === "telefone") {
+      value = formatTelefone(value);
     }
     if (field === "estadoTreinamento") {
       value = value.toUpperCase().slice(0, 2);
@@ -129,6 +142,16 @@ const PreTestForm = () => {
       });
       return false;
     }
+    // Validação e toast do telefone
+    const telOnly = unmaskTelefone(formData.telefone);
+    if (telOnly.length !== 11) {
+      toast({
+        title: "Telefone Inválido",
+        description: "O telefone deve conter 11 dígitos numéricos (incluindo DDD).",
+        variant: "destructive"
+      });
+      return false;
+    }
     return true;
   };
 
@@ -147,7 +170,7 @@ const PreTestForm = () => {
       // Nunca inclui treinamento_id!
       const payload = {
         nome_completo: formData.nomeCompleto,
-        telefone: formData.telefone,
+        telefone: unmaskTelefone(formData.telefone), // <-- só números
         email: formData.email,
         cpf: unmaskCpf(formData.cpf),
         idade: formData.idade,
@@ -213,8 +236,8 @@ const PreTestForm = () => {
       <div className="text-center mb-8">
         <div className="mb-6">
           <img 
-            src="https://fomrs-acad-lider.lovable.app/lovable-uploads/cd5b5d51-f39e-4ded-9d8a-686459ccc11b.png" 
-            alt="Academia de Líderes Logo" 
+            src="/lovable-uploads/2e59c37d-4195-49b2-954c-1e26ee49bf1c.png"
+            alt="Academia de Líderes Logo"
             className="mx-auto h-20 md:h-24 mb-4" 
           />
         </div>
@@ -252,10 +275,13 @@ const PreTestForm = () => {
                 id="telefone" 
                 value={formData.telefone} 
                 onChange={(e) => handleInputChange('telefone', e.target.value)} 
-                placeholder="(XX) XXXX-XXXX" 
+                placeholder="(XX)XXXXX-XXXX" 
                 className="bg-slate-700 border-slate-600 text-white" 
+                inputMode="numeric"
+                maxLength={14} // máscara com pontuação = máx 14 chars
                 required 
               />
+              <p className="text-xs text-gray-400 mt-1">Digite apenas números, será aplicada a máscara (xx)xxxxx-xxxx</p>
             </div>
 
             {/* 3. Email */}

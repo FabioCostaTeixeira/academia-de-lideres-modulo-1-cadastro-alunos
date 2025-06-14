@@ -1,4 +1,3 @@
-
 import React from "react";
 
 interface SuccessPopupProps {
@@ -20,10 +19,9 @@ const SuccessPopup = ({ open, onClose }: SuccessPopupProps) => {
           ×
         </button>
         <div className="mb-6">
-          {/* Substitua o PNG para uma imagem confiável hospedada por você ou finalidade demo */}
           <img
-            src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-check.svg/1024px-Circle-icons-check.svg.png"
-            alt="Cadastro realizado com sucesso"
+            src="/lovable-uploads/2e59c37d-4195-49b2-954c-1e26ee49bf1c.png"
+            alt="Academia de Líderes Logo"
             className="mx-auto h-20 md:h-24 mb-4"
           />
         </div>
