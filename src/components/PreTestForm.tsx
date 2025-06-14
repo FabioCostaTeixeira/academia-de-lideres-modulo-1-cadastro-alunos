@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const PreTestForm = () => {
   const { toast } = useToast();
@@ -30,11 +30,9 @@ const PreTestForm = () => {
   });
 
   const handleInputChange = (field: string, value: string) => {
-    // Para o campo estadoTreinamento, converter para uppercase e limitar a 2 caracteres
     if (field === 'estadoTreinamento') {
       value = value.toUpperCase().slice(0, 2);
     }
-    
     setFormData(prev => ({
       ...prev,
       [field]: value
@@ -42,16 +40,19 @@ const PreTestForm = () => {
   };
 
   const validateForm = () => {
-    const requiredFields = ['nomeCompleto', 'telefone', 'email', 'cpf', 'idade', 'cidadeResidencia', 'uf', 'escolaridade', 'funcao', 'empresa', 'cidadeTreinamento', 'estadoTreinamento', 'estadoEmocional'];
-    
+    const requiredFields = [
+      'nomeCompleto', 'telefone', 'email', 'cpf', 'idade', 'cidadeResidencia', 'uf',
+      'escolaridade', 'funcao', 'empresa', 'cidadeTreinamento', 'estadoTreinamento', 'estadoEmocional'
+    ];
     for (const field of requiredFields) {
       if (!formData[field as keyof typeof formData] || formData[field as keyof typeof formData] === "") {
         return false;
       }
     }
-
-    // Se função for "Outros", verificar se funcaoOutros foi preenchido
-    if (formData.funcao === "Outros" && (!formData.funcaoOutros || formData.funcaoOutros.trim() === "")) {
+    if (
+      formData.funcao === "Outros" &&
+      (!formData.funcaoOutros || formData.funcaoOutros.trim() === "")
+    ) {
       toast({
         title: "Campo Obrigatório",
         description: "Por favor, especifique sua função.",
@@ -59,8 +60,6 @@ const PreTestForm = () => {
       });
       return false;
     }
-
-    // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       toast({
@@ -70,8 +69,6 @@ const PreTestForm = () => {
       });
       return false;
     }
-
-    // Validate CPF format (only numbers)
     const cpfRegex = /^\d{11}$/;
     if (!cpfRegex.test(formData.cpf.replace(/\D/g, ''))) {
       toast({
@@ -81,8 +78,6 @@ const PreTestForm = () => {
       });
       return false;
     }
-
-    // Validate UF do treinamento (exactly 2 characters)
     if (formData.estadoTreinamento.length !== 2) {
       toast({
         title: "UF Inválida",
@@ -91,7 +86,6 @@ const PreTestForm = () => {
       });
       return false;
     }
-
     return true;
   };
 
@@ -105,37 +99,60 @@ const PreTestForm = () => {
       });
       return;
     }
-
     setIsSubmitting(true);
     try {
-      console.log("Form data to submit:", formData);
+      // Mapeia campos do frontend para os campos do banco Supabase
+      const payload = {
+        nome_completo: formData.nomeCompleto,
+        telefone: formData.telefone,
+        email: formData.email,
+        cpf: formData.cpf,
+        idade: formData.idade,
+        cidade_residencia: formData.cidadeResidencia,
+        estado_residencia: formData.uf,
+        escolaridade: formData.escolaridade,
+        funcao: formData.funcao === "Outros" ? formData.funcaoOutros : formData.funcao,
+        empresa: formData.empresa,
+        cidade_treinamento: formData.cidadeTreinamento,
+        estado_treinamento: formData.estadoTreinamento,
+        estado_emocional: formData.estadoEmocional
+      };
 
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      toast({
-        title: "Formulário Enviado com Sucesso!",
-        description: "Seus dados foram salvos com sucesso."
-      });
+      const { error } = await supabase
+        .from("Cadastro_Alunos")
+        .insert([payload]);
 
-      // Reset form
-      setFormData({
-        nomeCompleto: "",
-        telefone: "",
-        email: "",
-        cpf: "",
-        idade: "",
-        cidadeResidencia: "",
-        uf: "",
-        escolaridade: "",
-        funcao: "",
-        funcaoOutros: "",
-        empresa: "",
-        cidadeTreinamento: "",
-        estadoTreinamento: "",
-        estadoEmocional: ""
-      });
+      if (error) {
+        console.error("Erro ao salvar no Supabase:", error);
+        toast({
+          title: "Erro ao Enviar",
+          description: "Ocorreu um erro ao salvar no banco de dados. Tente novamente.",
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Formulário Enviado com Sucesso!",
+          description: "Seus dados foram salvos com sucesso."
+        });
+        setFormData({
+          nomeCompleto: "",
+          telefone: "",
+          email: "",
+          cpf: "",
+          idade: "",
+          cidadeResidencia: "",
+          uf: "",
+          escolaridade: "",
+          funcao: "",
+          funcaoOutros: "",
+          empresa: "",
+          cidadeTreinamento: "",
+          estadoTreinamento: "",
+          estadoEmocional: ""
+        });
+      }
     } catch (error) {
-      console.error("Error submitting form:", error);
+      console.error("Erro ao submeter formulário:", error);
       toast({
         title: "Erro ao Enviar",
         description: "Ocorreu um erro ao enviar o formulário. Tente novamente.",
