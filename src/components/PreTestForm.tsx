@@ -408,7 +408,7 @@ const PreTestForm = () => {
                 <SelectContent className="bg-slate-700 border-slate-600 z-50">
                   {BR_STATES.map((state) => (
                     <SelectItem key={state.uf} value={state.uf} className="text-white">
-                      {state.name} ({state.uf})
+                      {state.uf}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -503,7 +503,7 @@ const PreTestForm = () => {
                 <SelectContent className="bg-slate-700 border-slate-600 z-50">
                   {BR_STATES.map((state) => (
                     <SelectItem key={state.uf} value={state.uf} className="text-white">
-                      {state.name} ({state.uf})
+                      {state.uf}
                     </SelectItem>
                   ))}
                 </SelectContent>
