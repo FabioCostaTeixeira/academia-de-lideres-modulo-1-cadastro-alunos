@@ -7,15 +7,19 @@ export type Json =
   | Json[]
 
 export type Database = {
+  // Allows to automatically instanciate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "13.0.4"
+  }
   public: {
     Tables: {
-      Cadastro_Alunos: {
+      Cadastro_Alunos_Mod_lll: {
         Row: {
-          carimbo_data_hora: string | null
           cidade_residencia: string | null
           cidade_treinamento: string | null
-          cpf: string
-          data_treinamento: string | null
+          cpf: number | null
+          criado_em: string | null
           email: string | null
           empresa: string | null
           escolaridade: string | null
@@ -23,19 +27,17 @@ export type Database = {
           estado_residencia: string | null
           estado_treinamento: string | null
           funcao: string | null
-          hora_treinamento: string | null
-          id_aluno: string | null
-          idade: string | null
+          id_aluno: number
+          idade: number | null
           nome_completo: string | null
-          telefone: string | null
-          treinamento_id: number | null
+          telefone: number | null
+          treinamento_id: string | null
         }
         Insert: {
-          carimbo_data_hora?: string | null
           cidade_residencia?: string | null
           cidade_treinamento?: string | null
-          cpf: string
-          data_treinamento?: string | null
+          cpf?: number | null
+          criado_em?: string | null
           email?: string | null
           empresa?: string | null
           escolaridade?: string | null
@@ -43,19 +45,17 @@ export type Database = {
           estado_residencia?: string | null
           estado_treinamento?: string | null
           funcao?: string | null
-          hora_treinamento?: string | null
-          id_aluno?: string | null
-          idade?: string | null
+          id_aluno?: number
+          idade?: number | null
           nome_completo?: string | null
-          telefone?: string | null
-          treinamento_id?: number | null
+          telefone?: number | null
+          treinamento_id?: string | null
         }
         Update: {
-          carimbo_data_hora?: string | null
           cidade_residencia?: string | null
           cidade_treinamento?: string | null
-          cpf?: string
-          data_treinamento?: string | null
+          cpf?: number | null
+          criado_em?: string | null
           email?: string | null
           empresa?: string | null
           escolaridade?: string | null
@@ -63,53 +63,341 @@ export type Database = {
           estado_residencia?: string | null
           estado_treinamento?: string | null
           funcao?: string | null
-          hora_treinamento?: string | null
-          id_aluno?: string | null
-          idade?: string | null
+          id_aluno?: number
+          idade?: number | null
           nome_completo?: string | null
-          telefone?: string | null
-          treinamento_id?: number | null
+          telefone?: number | null
+          treinamento_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "Cadastro_Alunos_treinamento_id_fkey"
-            columns: ["treinamento_id"]
-            isOneToOne: false
-            referencedRelation: "DADOS_TREINAMENTOS"
-            referencedColumns: ["Treinamento_id"]
-          },
-        ]
+        Relationships: []
       }
-      DADOS_TREINAMENTOS: {
+      certificados: {
         Row: {
-          CIDADE: string | null
-          CONTRATO: string | null
-          DATA: string | null
-          "Data Fim": string | null
-          "EMPRESA CLIENTE": string | null
-          EQUIPE: string | null
-          ESTADO: string | null
-          Treinamento_id: number
+          carga_horaria: string | null
+          carimbo_data_hora: string | null
+          data_conclusao_treinamento: string | null
+          id_certificado: string
+          link_download_direct: string | null
+          link_download_view: string | null
+          local_treinamento: string | null
+          municipio_uf_treinamento: string | null
+          nome_completo_aluno: string | null
         }
         Insert: {
-          CIDADE?: string | null
-          CONTRATO?: string | null
-          DATA?: string | null
-          "Data Fim"?: string | null
-          "EMPRESA CLIENTE"?: string | null
-          EQUIPE?: string | null
-          ESTADO?: string | null
-          Treinamento_id: number
+          carga_horaria?: string | null
+          carimbo_data_hora?: string | null
+          data_conclusao_treinamento?: string | null
+          id_certificado?: string
+          link_download_direct?: string | null
+          link_download_view?: string | null
+          local_treinamento?: string | null
+          municipio_uf_treinamento?: string | null
+          nome_completo_aluno?: string | null
         }
         Update: {
-          CIDADE?: string | null
-          CONTRATO?: string | null
-          DATA?: string | null
-          "Data Fim"?: string | null
-          "EMPRESA CLIENTE"?: string | null
-          EQUIPE?: string | null
-          ESTADO?: string | null
-          Treinamento_id?: number
+          carga_horaria?: string | null
+          carimbo_data_hora?: string | null
+          data_conclusao_treinamento?: string | null
+          id_certificado?: string
+          link_download_direct?: string | null
+          link_download_view?: string | null
+          local_treinamento?: string | null
+          municipio_uf_treinamento?: string | null
+          nome_completo_aluno?: string | null
+        }
+        Relationships: []
+      }
+      dados_treinamento: {
+        Row: {
+          cidade: string | null
+          cliente: string | null
+          contrato_cliente: string | null
+          data_inicio: string | null
+          data_termino: string | null
+          equipe: string | null
+          estado: string | null
+          Instrutor_Auxiliar: string | null
+          Instrutor_Principal: string | null
+          treinamento_id: number
+        }
+        Insert: {
+          cidade?: string | null
+          cliente?: string | null
+          contrato_cliente?: string | null
+          data_inicio?: string | null
+          data_termino?: string | null
+          equipe?: string | null
+          estado?: string | null
+          Instrutor_Auxiliar?: string | null
+          Instrutor_Principal?: string | null
+          treinamento_id: number
+        }
+        Update: {
+          cidade?: string | null
+          cliente?: string | null
+          contrato_cliente?: string | null
+          data_inicio?: string | null
+          data_termino?: string | null
+          equipe?: string | null
+          estado?: string | null
+          Instrutor_Auxiliar?: string | null
+          Instrutor_Principal?: string | null
+          treinamento_id?: number
+        }
+        Relationships: []
+      }
+      gabarito: {
+        Row: {
+          pergunta: string | null
+          pergunta_id: string
+          resposta_certa: string | null
+        }
+        Insert: {
+          pergunta?: string | null
+          pergunta_id: string
+          resposta_certa?: string | null
+        }
+        Update: {
+          pergunta?: string | null
+          pergunta_id?: string
+          resposta_certa?: string | null
+        }
+        Relationships: []
+      }
+      pesquisa_satisfacao: {
+        Row: {
+          "A carga horária ideal para o conteúdo abordado": string | null
+          "Avaliação geral do conteúdo?": string | null
+          "Banheiros, quanto a limpeza, acessibilidade, etc.?": string | null
+          "Capacidade de utilização do tempo": string | null
+          "Carimbo de data/hora": string | null
+          "Clareza e objetividade na exposição do tema?": string | null
+          "Climatização, a eficiência de seu funcionamento?": string | null
+          "Coffee Breack e alimentação?": string | null
+          "Domínio dos conteúdos abordados?": string | null
+          "Equipamentos de projeção e sonorização?": string | null
+          "Habilidade para criar interesse sobre o assunto?": string | null
+          "Hall de atendimento?": string | null
+          "No campo abaixo, gostaríamos de te ouvir, pode ser um elogio, ":
+            | string
+            | null
+          "O conteúdo Trabalhado tem relação com as minhas atividades d":
+            | string
+            | null
+          "Os temas foram desenvolvidos em grau de profundidade condizente":
+            | string
+            | null
+          pesquisa_id: string
+          "Recepção?": string | null
+          "Salas, seu espaço, layout, isolamento acústico etc.?": string | null
+          "Transmissão de confiança e credibilidade?": string | null
+          treinamento_id: string | null
+        }
+        Insert: {
+          "A carga horária ideal para o conteúdo abordado"?: string | null
+          "Avaliação geral do conteúdo?"?: string | null
+          "Banheiros, quanto a limpeza, acessibilidade, etc.?"?: string | null
+          "Capacidade de utilização do tempo"?: string | null
+          "Carimbo de data/hora"?: string | null
+          "Clareza e objetividade na exposição do tema?"?: string | null
+          "Climatização, a eficiência de seu funcionamento?"?: string | null
+          "Coffee Breack e alimentação?"?: string | null
+          "Domínio dos conteúdos abordados?"?: string | null
+          "Equipamentos de projeção e sonorização?"?: string | null
+          "Habilidade para criar interesse sobre o assunto?"?: string | null
+          "Hall de atendimento?"?: string | null
+          "No campo abaixo, gostaríamos de te ouvir, pode ser um elogio, "?:
+            | string
+            | null
+          "O conteúdo Trabalhado tem relação com as minhas atividades d"?:
+            | string
+            | null
+          "Os temas foram desenvolvidos em grau de profundidade condizente"?:
+            | string
+            | null
+          pesquisa_id?: string
+          "Recepção?"?: string | null
+          "Salas, seu espaço, layout, isolamento acústico etc.?"?: string | null
+          "Transmissão de confiança e credibilidade?"?: string | null
+          treinamento_id?: string | null
+        }
+        Update: {
+          "A carga horária ideal para o conteúdo abordado"?: string | null
+          "Avaliação geral do conteúdo?"?: string | null
+          "Banheiros, quanto a limpeza, acessibilidade, etc.?"?: string | null
+          "Capacidade de utilização do tempo"?: string | null
+          "Carimbo de data/hora"?: string | null
+          "Clareza e objetividade na exposição do tema?"?: string | null
+          "Climatização, a eficiência de seu funcionamento?"?: string | null
+          "Coffee Breack e alimentação?"?: string | null
+          "Domínio dos conteúdos abordados?"?: string | null
+          "Equipamentos de projeção e sonorização?"?: string | null
+          "Habilidade para criar interesse sobre o assunto?"?: string | null
+          "Hall de atendimento?"?: string | null
+          "No campo abaixo, gostaríamos de te ouvir, pode ser um elogio, "?:
+            | string
+            | null
+          "O conteúdo Trabalhado tem relação com as minhas atividades d"?:
+            | string
+            | null
+          "Os temas foram desenvolvidos em grau de profundidade condizente"?:
+            | string
+            | null
+          pesquisa_id?: string
+          "Recepção?"?: string | null
+          "Salas, seu espaço, layout, isolamento acústico etc.?"?: string | null
+          "Transmissão de confiança e credibilidade?"?: string | null
+          treinamento_id?: string | null
+        }
+        Relationships: []
+      }
+      pos_teste: {
+        Row: {
+          carimbo_data_hora: string | null
+          cpf: string | null
+          data_treinamento: string | null
+          hora_treinamento: string | null
+          id_posteste: string
+          id_treinamento: string | null
+          nome_aluno: string | null
+          pergunta01: string | null
+          pergunta02: string | null
+          pergunta03: string | null
+          pergunta04: string | null
+          pergunta05: string | null
+          pergunta06: string | null
+          pergunta07: string | null
+          pergunta08: string | null
+          pergunta09: string | null
+          pergunta10: string | null
+        }
+        Insert: {
+          carimbo_data_hora?: string | null
+          cpf?: string | null
+          data_treinamento?: string | null
+          hora_treinamento?: string | null
+          id_posteste?: string
+          id_treinamento?: string | null
+          nome_aluno?: string | null
+          pergunta01?: string | null
+          pergunta02?: string | null
+          pergunta03?: string | null
+          pergunta04?: string | null
+          pergunta05?: string | null
+          pergunta06?: string | null
+          pergunta07?: string | null
+          pergunta08?: string | null
+          pergunta09?: string | null
+          pergunta10?: string | null
+        }
+        Update: {
+          carimbo_data_hora?: string | null
+          cpf?: string | null
+          data_treinamento?: string | null
+          hora_treinamento?: string | null
+          id_posteste?: string
+          id_treinamento?: string | null
+          nome_aluno?: string | null
+          pergunta01?: string | null
+          pergunta02?: string | null
+          pergunta03?: string | null
+          pergunta04?: string | null
+          pergunta05?: string | null
+          pergunta06?: string | null
+          pergunta07?: string | null
+          pergunta08?: string | null
+          pergunta09?: string | null
+          pergunta10?: string | null
+        }
+        Relationships: []
+      }
+      pre_teste: {
+        Row: {
+          carimbo_data_hora: string | null
+          conviccaopergunta01: number | null
+          conviccaopergunta02: number | null
+          conviccaopergunta03: number | null
+          conviccaopergunta04: number | null
+          conviccaopergunta05: number | null
+          conviccaopergunta06: number | null
+          conviccaopergunta07: number | null
+          conviccaopergunta08: number | null
+          conviccaopergunta09: number | null
+          conviccaopergunta10: number | null
+          cpf: number | null
+          data_treinamento: string | null
+          hora_treinamento: string | null
+          id_preteste: string
+          id_treinamento: string | null
+          nome_aluno: string | null
+          pergunta01: string | null
+          pergunta02: string | null
+          pergunta03: string | null
+          pergunta04: string | null
+          pergunta05: string | null
+          pergunta06: string | null
+          pergunta07: string | null
+          pergunta08: string | null
+          pergunta09: string | null
+          pergunta10: string | null
+        }
+        Insert: {
+          carimbo_data_hora?: string | null
+          conviccaopergunta01?: number | null
+          conviccaopergunta02?: number | null
+          conviccaopergunta03?: number | null
+          conviccaopergunta04?: number | null
+          conviccaopergunta05?: number | null
+          conviccaopergunta06?: number | null
+          conviccaopergunta07?: number | null
+          conviccaopergunta08?: number | null
+          conviccaopergunta09?: number | null
+          conviccaopergunta10?: number | null
+          cpf?: number | null
+          data_treinamento?: string | null
+          hora_treinamento?: string | null
+          id_preteste?: string
+          id_treinamento?: string | null
+          nome_aluno?: string | null
+          pergunta01?: string | null
+          pergunta02?: string | null
+          pergunta03?: string | null
+          pergunta04?: string | null
+          pergunta05?: string | null
+          pergunta06?: string | null
+          pergunta07?: string | null
+          pergunta08?: string | null
+          pergunta09?: string | null
+          pergunta10?: string | null
+        }
+        Update: {
+          carimbo_data_hora?: string | null
+          conviccaopergunta01?: number | null
+          conviccaopergunta02?: number | null
+          conviccaopergunta03?: number | null
+          conviccaopergunta04?: number | null
+          conviccaopergunta05?: number | null
+          conviccaopergunta06?: number | null
+          conviccaopergunta07?: number | null
+          conviccaopergunta08?: number | null
+          conviccaopergunta09?: number | null
+          conviccaopergunta10?: number | null
+          cpf?: number | null
+          data_treinamento?: string | null
+          hora_treinamento?: string | null
+          id_preteste?: string
+          id_treinamento?: string | null
+          nome_aluno?: string | null
+          pergunta01?: string | null
+          pergunta02?: string | null
+          pergunta03?: string | null
+          pergunta04?: string | null
+          pergunta05?: string | null
+          pergunta06?: string | null
+          pergunta07?: string | null
+          pergunta08?: string | null
+          pergunta09?: string | null
+          pergunta10?: string | null
         }
         Relationships: []
       }
@@ -118,40 +406,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      armor: {
-        Args: { "": string }
-        Returns: string
-      }
-      dearmor: {
-        Args: { "": string }
-        Returns: string
-      }
-      gen_random_bytes: {
-        Args: { "": number }
-        Returns: string
-      }
-      gen_random_uuid: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      gen_salt: {
-        Args: { "": string }
-        Returns: string
-      }
-      generate_unique_alphanumeric_id: {
-        Args:
-          | Record<PropertyKey, never>
-          | { length_param: number; table_name: string; column_name: string }
-        Returns: string
-      }
-      pgp_armor_headers: {
-        Args: { "": string }
-        Returns: Record<string, unknown>[]
-      }
-      pgp_key_id: {
-        Args: { "": string }
-        Returns: string
-      }
+      [_ in never]: never
     }
     Enums: {
       [_ in never]: never
@@ -162,21 +417,25 @@ export type Database = {
   }
 }
 
-type DefaultSchema = Database[Extract<keyof Database, "public">]
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof (Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-        Database[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
-  ? (Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-      Database[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
       Row: infer R
     }
     ? R
@@ -194,14 +453,16 @@ export type Tables<
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
-  ? Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Insert: infer I
     }
     ? I
@@ -217,14 +478,16 @@ export type TablesInsert<
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
-  ? Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Update: infer U
     }
     ? U
@@ -240,14 +503,16 @@ export type TablesUpdate<
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   EnumName extends DefaultSchemaEnumNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof Database[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
     : never = never,
-> = DefaultSchemaEnumNameOrOptions extends { schema: keyof Database }
-  ? Database[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
     ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
     : never
@@ -255,14 +520,16 @@ export type Enums<
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
     : never = never,
-> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
     ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
