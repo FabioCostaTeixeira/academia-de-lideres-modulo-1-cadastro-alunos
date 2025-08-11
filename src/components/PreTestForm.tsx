@@ -246,11 +246,10 @@ const PreTestForm = () => {
       // Nunca inclui treinamento_id!
       const payload = {
         nome_completo: formData.nomeCompleto,
-        telefone: unmaskTelefone(formData.telefone),
-        // <-- só números
+        telefone: Number(unmaskTelefone(formData.telefone)), // somente números
         email: formData.email,
-        cpf: unmaskCpf(formData.cpf),
-        idade: formData.idade,
+        cpf: Number(unmaskCpf(formData.cpf)),
+        idade: parseInt(formData.idade, 10),
         cidade_residencia: formData.cidadeResidencia,
         estado_residencia: formData.uf,
         escolaridade: formData.escolaridade,
@@ -261,9 +260,9 @@ const PreTestForm = () => {
         estado_emocional: formData.estadoEmocional
         // treinamento_id NÃO deve ser preenchido nunca, manter como NULL
       };
-      const {
-        error
-      } = await supabase.from("Cadastro_Alunos").insert([payload]);
+      const { error } = await supabase
+        .from("Cadastro_Alunos_Mod_lll")
+        .insert([payload]);
       if (error) {
         console.error("Erro ao salvar no Supabase:", error);
         toast({
